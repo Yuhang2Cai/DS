@@ -1,0 +1,251 @@
+#include<stdio.h>
+#define maxsize 100
+typedef int ElemType;
+typedef struct {
+	ElemType *elem;
+	int length;
+}SqList;
+//初始化顺序表
+bool List_init(SqList& L) {
+	L.elem = new ElemType[maxsize];
+	if (!L.elem)
+		return false;
+	L.length = 0;
+	return 0;
+}
+//创建顺序表
+bool List_Create(SqList& L) {
+	int i = 0, a = 0, b = 0;
+	printf("please input the length of the list\n");
+	scanf_s("%d", &b);
+	if (b > maxsize) {
+		return false;
+	}
+	while (b--) {
+		printf("plese input the number of List one by one\n");
+		scanf_s("%d", &a);
+		if (!L.elem)
+			return false;
+		L.elem[i] = a;
+		i++;
+		L.length++;
+	}
+	return true;
+}
+//按址取值
+bool List_GetElem(SqList L, ElemType& item, int i) {
+	if (i<1 || i>L.length) {
+		return false;
+	}
+	item = L.elem[i - 1];
+	return true;
+}
+//按值取址
+int List_Locate(SqList L, ElemType item) {
+	for (int i = 0; i < L.length; i++) {
+		if (L.elem[i] == item)
+			return i + 1;
+	}
+	return 0;
+}
+//插入
+bool List_insert(SqList& L, int i, ElemType item) {
+	if (i<1 || i>(L.length + 1))
+		return false;
+	if (L.length >= maxsize)
+		return false;
+	for (int j = L.length - 1; j >= i-1; j--) {
+		L.elem[j + 1] = L.elem[j];
+	}
+	L.elem[i - 1] = item;
+	L.length++;
+	return true;
+}
+//按址删除
+bool List_delete(SqList& L, int i) {
+	if (i<1 || i>L.length)
+		return false;
+	for (int j = i - 1; j < L.length - 1; j++) {
+		L.elem[j] = L.elem[j + 1];
+	}
+	L.length--;
+	return true;
+}
+//打印顺序表
+void List_print(SqList L) {
+	if (L.length == 0) {
+		printf("该顺序表为空\n");
+	}
+	else {
+		for (int i = 0; i <= L.length - 1; i++) {
+			printf("%d ", L.elem[i]);
+		}
+		printf("\n");
+	}
+}
+//销毁
+void List_Destory(SqList& L) {
+	if (L.elem) {
+		delete[] L.elem;
+		L.elem = NULL;
+		L.length = 0;
+		printf("销毁成功\n");
+	}
+	else {
+		printf("已销毁，不用重复销毁\n");
+	}
+}
+void List_clear(SqList& L) {
+	L.length = 0;
+}
+//删除最小值,并把最后一个元素放在最小值的位置
+bool List_MinDelete(SqList& L, ElemType& item) {
+	if (L.length == 0){
+		printf("线性表为空\n");
+	return false;
+	}
+	item = L.elem[0];
+	int j = 0;
+	for(int i = 0; i < L.length; i++) {
+		if (L.elem[i] <item) {
+			item = L.elem[i];
+			j = i;
+		}
+	}
+	L.elem[j] = L.elem[L.length - 1];
+	L.length--;
+	return true;
+}
+//逆置顺序表
+bool List_reverse(SqList& L) {
+	if (!L.elem)
+		return false;
+	int i = 0, j = L.length - 1;
+	ElemType temp;
+	for (; i < j; i++,j--) {
+		temp = L.elem[j];
+		L.elem[j] = L.elem[i];
+		L.elem[i] = temp;
+	}
+	return true;
+}
+//删除指定重复的元素
+bool List_deleteRea(SqList& L, ElemType item) {
+	if (L.length == 0) {
+		printf("该顺序表为0\n");
+		return false;
+	}
+	if (!L.elem) {
+		printf("该顺序表分配空间失败\n");
+		return false;
+	}
+	int k = 0;//记录不等于item的个数
+	for (int i = 0; i<L.length; i++) {
+		if (L.elem[i] != item) {
+			L.elem[k] = L.elem[i];
+			k++;
+		}
+
+	}
+	L.length = k;
+	return true;
+}
+//删除指定区间的元素
+bool List_deleteBtw(SqList& L, ElemType s, ElemType t) {
+	if (s >= t) {
+		printf("给定范围有错，请第一个元素小于第二个元素\n");
+		return false;
+	}
+	if (L.length == 0) {
+		printf("该顺序表为空\n");
+		return false;
+	}
+	int k = 0;//记录不在该区间元素的个数
+	for (int i = 0; i < L.length; i++) {
+		if (L.elem[i]<s ||L.elem[i]>t) {
+			L.elem[k] = L.elem[i];
+			k++;
+			printf("k: %d\n", k);
+		}
+		
+				
+	}
+	L.length = k;
+	return true;
+}
+//合并两个有序表，删除重复数字得到另一个顺序表
+bool List_Merge(SqList La, SqList Lb, SqList& Lc) {
+	int k = 0;
+	int i = 0, j = 0;	
+	if (La.length + Lb.length > maxsize)
+		return false;
+	while(i <= La.length - 1 && j <= Lb.length - 1) {
+		if (La.elem[i] < Lb.elem[j]) {
+			Lc.elem[k++] = La.elem[i++];
+		}
+		else if (La.elem[i] == Lb.elem[j]) {
+			Lc.elem[k++] = La.elem[i++];
+			j++;
+		}
+		else {
+			Lc.elem[k++] = Lb.elem[j++];
+		}
+	}
+	
+	while (i <= La.length - 1) {
+		Lc.elem[k++] = La.elem[i++];	
+	}
+	while (j <= Lb.length - 1) {
+		Lc.elem[k++] = Lb.elem[j++];
+	}
+	Lc.length = k;
+	return true;
+}
+//练习题，找到有序顺序表里面的一个元素，没找到则按顺序插入，找到就和后继元素互换位置
+bool List_searchOrder(SqList& L, ElemType item) {
+	int a1 = 0, a2 = L.elem[L.length - 1];
+	int b = (a1 + a2) / 2,temp;
+	while (a1 != a2||b!=item) {
+		if (L.elem[b] == item) {
+			temp = L.elem[b + 1];
+			L.elem[b + 1] = L.elem[b];
+			L.elem[b] = temp;
+			return true;
+		}
+		if (item < b) {
+			a2 = b;
+			b = (a1 + a2) / 2;
+		}
+		if (item > b) {
+			a1 = b;
+			b = (a1 + a2) / 2;
+		}
+	}
+	if (L.elem[a1] < item)
+		List_insert(L, a1 + 1, item);
+	if (L.elem[a1] > item)
+		List_insert(L, a1 - 1, item);
+	return true;
+}
+int main() {
+	SqList L,La,Lb,Lc;
+	ElemType a, b;
+	List_init(L);
+	List_init(La);
+	List_init(Lb);
+	List_init(Lc);
+
+	printf("创建顺序表La\n");
+	List_Create(L);
+	printf("请输入你想要查找的值\n");
+	scanf_s("%d", &b);
+	if (List_searchOrder(L, b)) {
+		printf("查找成功，与后继元素交换位置返回查找过后的顺序表\n");
+		List_print(L);
+	}
+	else {
+		printf("查找失败，插入并返回查找后的顺序表\n");
+		List_print(L);
+	}
+	return 0;
+}
