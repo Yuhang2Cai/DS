@@ -1,0 +1,150 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+typedef int ElemType;
+typedef struct Node {
+	ElemType data;
+	struct Node* next;
+}LNode,*LinkList;
+//头插法创建单链表
+
+LinkList List_HeadInsert(LinkList& L) {
+	LNode* s; int x;
+	L = (LinkList)malloc(sizeof(LNode));
+	L->next = NULL;
+	printf("请输入要插入的结点的数据,输入9999时停止创建链表\n");
+	scanf_s("%d", &x);
+	while (x!=9999)
+	{	
+		s = (LNode*)malloc(sizeof(LNode));
+		s->data = x;
+		s->next = L->next;
+		L->next = s;
+		printf("请输入要插入的结点的数据,输入9999时停止创建链表\n");
+		scanf_s("%d", &x);
+	}
+	return L;
+}
+
+//尾插法创建单链表
+LinkList List_TailInsert(LinkList& L) {
+	LNode* s, * r;
+	int x;
+	L = (LinkList)malloc(sizeof(LNode));
+	L->next = NULL;
+	r = L;
+	printf("请输入你想要输入的数据，输入9999停止输入\n");
+	scanf_s("%d", &x);
+	while (x != 9999) {
+		s = (LNode*)malloc(sizeof(LNode));
+		s->data = x;
+		s->next = r->next;
+		r->next = s;
+		r = s;
+		printf("请输入你想要输入的数据，输入9999停止输入\n");
+		scanf_s("%d", &x);
+	}
+	r->next = NULL;
+	return L;
+
+}
+//按位查找对应结点
+int List_Lenth(LinkList L) {
+	LNode* p;
+	int len = 0;
+	p = L;
+	while (p) {
+		p = p->next;
+		len++;
+	}
+	return len;
+}
+LNode* List_GetElem(LinkList L, int i) {
+	if (i == 0)
+		return L;
+	if (i < 0)
+		return NULL;
+	LNode* p;
+	int j = 1;
+	p = L->next;
+	while (p && j < i) {
+		p = p->next;
+		j++;
+	}
+	return p;
+}
+//按值查找
+LNode* List_LocateElem(LinkList L, ElemType e) {
+	LNode* p;
+	p = L->next;
+	while (p && p->data != e) {
+		p = p->next;
+	}
+	return p;
+}
+//插入到指定位置
+bool List_Insert(LinkList& L, int i,ElemType item) {
+	if (i <= 0||i>List_Lenth(L)+1)
+		return false;
+
+	LNode* p;
+	p = List_GetElem(L, i - 1);
+	LNode* s;
+	s = (LNode*)malloc(sizeof(LNode));
+	s->data = item;
+	s->next = p->next;
+	p->next = s;
+	return true;
+}
+//删除指定位置结点
+void List_print(LinkList& L) {
+	LNode* p;
+	p = L->next;
+	while (p) {
+		printf("%d ", p->data);
+		p = p->next;
+	}
+	printf("\n");
+}
+int List_lenth(LinkList& L) {
+	LNode* p;
+	int len = 0;
+	p = L->next;
+	while (p) {
+		len++;
+		p = p->next;
+	}
+	return len;
+}
+bool List_Delete(LinkList& L, int i) {
+	if (i <= 0)
+		return false;
+	LNode* p, * q;
+	p = List_GetElem(L, i - 1);
+	q = p->next;
+	p->next = q->next;
+	free(q);
+	return 0;
+}
+int main() {
+	LinkList L;
+	LNode* s;
+	int n;
+	ElemType item;
+	List_TailInsert(L);
+	List_print(L);
+	printf("请输入你想查找的结点\n");
+	scanf_s("%d", &n);
+	s = List_GetElem(L, n);
+	printf("the item of this node is %d ", s->data);
+	printf("\n");
+	printf("请输入你想插入的位置与数据\n");
+	scanf_s("%d %d", &n, &item);
+	if (List_Insert(L, n, item)) {
+		printf("插入后的链表：\n");
+		List_print(L);
+	}
+	else
+		printf("插入的位置有错!\n");
+	return 0;
+}
