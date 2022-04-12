@@ -1,0 +1,135 @@
+#include<stdio.h>
+#include<malloc.h>
+typedef int ElemType;
+typedef struct DNode {
+	ElemType data;
+	struct DNode* prior, * next;
+}DNode,*DLinkList;
+//尾插法创建双链表
+void DList_TailInsert(DLinkList& L, int n) {
+	L = (DLinkList)malloc(sizeof(DNode));
+	L->prior = NULL;
+	L->next = NULL;
+	DNode* tail;
+	tail = L;
+	printf("请输入%d个元素\n",n);
+	int i = 0;
+	while (i < n) {
+		printf("请输入你想要输入的数字\n");
+		ElemType item;
+		scanf_s("%d", &item);
+		DNode* temp = (DNode*)malloc(sizeof(DNode));
+		temp->data = item;
+		temp->next = tail->next;
+		temp->prior = tail;
+		tail->next = temp;
+		tail = temp;
+		i++;
+	}
+}
+void DList_print(DLinkList L) {
+	DNode* p;
+	p = L->next;
+	while (p) {
+		printf("%d ", p->data);
+		p = p->next;
+	}
+	printf("\n");
+	
+}
+int DList_lenth(DLinkList L) {
+	DNode* p;
+	p = L;
+	int i = 0;
+	while (p) {
+		p = p->next;
+		i++;
+	}
+	return i-1;
+}
+DNode* DList_GetElem(DLinkList L, int i) {
+	if (i <= 0 || i > DList_lenth(L) + 1) {
+		printf("插入的位置有错误!\n");
+		return NULL;
+	}
+	DNode* p;
+	p = L->next;
+	int j = 1;
+	while (j < i) {
+		p = p->next;
+		j++;
+	}
+	return p;
+}
+bool DList_Insert(DLinkList& L, int i, ElemType item) {
+	if (i <= 0 || i > DList_lenth(L) + 1)
+		return false;
+	DNode* s;
+	DNode* p;
+	p = (DNode*)malloc(sizeof(DNode));
+	s = DList_GetElem(L, i - 1);
+	p->data=item;
+	p->next = s->next;
+	if(s->next!=NULL)//对于插入位置是在最后一个元素后面的部分需要特殊处理
+		s->next->prior = p;
+	s->next = p;
+	p->prior = s;
+	return true;
+
+}
+bool DList_Delete(DLinkList& L, int i) {
+	if (i <= 0 || i > DList_lenth(L))
+		return false;
+	DNode* p,*s;
+	p = DList_GetElem(L, i - 1);
+	s = p->next;
+	
+	p->next = s->next;
+	if (s->next != NULL) {
+	p->next->prior = p;
+	}
+	free(s);
+	return true;
+	
+}
+bool DList_Destroy(DLinkList& L) {
+	if (L->next != NULL)
+		DList_Destroy(L->next);//运用递归
+	free(L);
+	L = NULL;
+	return true;
+}
+bool DList_Clear(DLinkList& L) {
+	DList_Clear(L->next);
+	L->next = NULL;
+	L->data = 0;
+	return true;
+}
+int main() {
+	DLinkList L;
+	int n;
+	printf("请输入你想要创建的结点个数\n");
+	scanf_s("%d", &n);
+	DList_TailInsert(L, n);
+	DList_print(L);
+	ElemType item;
+	printf("请输入你想插入的位置与结点元素\n");
+	scanf_s("%d %d",&n,&item);
+	if (DList_Insert(L, n, item)) {
+		printf("after the insert:\n");
+		DList_print(L);
+
+	}
+	else {
+		printf("the position is wrong!\n");
+	}
+	printf("请输入你想删除的结点位置\n");
+	scanf_s("%d", &n);
+	if (DList_Delete(L, n)) {
+		printf("after deleting this node:\n");
+		DList_print(L);
+	}
+	else
+		printf("the position is worng\n");
+	return 0;
+}
