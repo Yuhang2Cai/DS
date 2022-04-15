@@ -1,0 +1,96 @@
+#include<stdio.h>
+typedef int ElemType;
+#define MAXSIZE 50
+typedef struct {
+	ElemType data[MAXSIZE];
+	int top;
+}SqStack;
+//初始化栈
+void Stack_init(SqStack& S) {
+	S.top = -1;//将top指向栈底下一个存储空间
+}
+//判断栈是否为空
+bool Stack_Empty(SqStack S) {
+	if (S.top == -1)
+		return true;
+	else
+		return false;
+}
+//进栈
+bool Push(SqStack& S, ElemType item) {
+	if (S.top == MAXSIZE-1)
+		return false;//栈满
+	S.data[++S.top] = item;
+	return true;
+}
+//出栈，并返回栈顶的值
+bool pop(SqStack& S, ElemType& item) {
+	if (S.top == -1)
+		return false;//栈为空，返回错误
+	item = S.data[S.top--];
+	return true;
+}
+//读取栈顶元素
+bool Stack_Gettop(SqStack& S, ElemType &item) {
+	if (S.top == -1)
+		return false;//栈为空报错
+	item = S.data[S.top];
+	return true;
+}
+//返回栈长度
+int Stack_Lenth(SqStack& S) {
+	return S.top + 1;
+}
+void Stack_Print(SqStack S) {
+	int n = S.top + 1;
+	if (n == 0)
+		printf("链表为空\n");
+	else {
+		printf("从栈底到栈顶的元素依次为:\n");
+		for(int i=0;i<n;i++)
+		{
+			printf("%d", S.data[i]);
+			if (i != n - 1)
+				printf("->");
+		}
+					
+		
+	}
+		
+	printf("\n");
+}
+void test() {
+	SqStack S;
+	Stack_init(S);
+	printf("请输入你想要输入的元素个数\n");
+	int n;
+	scanf_s("%d", &n);
+	while (n--) {
+		printf("输入入栈的元素\n");
+		int item;
+		scanf_s("%d", &item);
+		Push(S, item);
+	}
+	Stack_Print(S);
+	int top_item;
+	Stack_Gettop(S, top_item);
+	printf("此时栈顶元素为%d\n", top_item);
+	printf("请输入出栈元素个数\n");
+	scanf_s("%d", &n);
+	if (n > Stack_Lenth(S))
+		printf("出栈个数大于栈内元素个数！！！！\n");
+	else {
+		while (n--) {
+			pop(S, top_item);
+			printf("此时出栈元素为%d\n", top_item);
+		}
+	}
+	printf("出栈操作后:\n");
+	Stack_Print(S);
+		
+
+}
+int main() {
+	test();
+	return 0;
+}
