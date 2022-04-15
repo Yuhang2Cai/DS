@@ -1,0 +1,44 @@
+//因为链式表在820考研中很少出现，因此本部分就简单写了最基本的几个操作，没有进行测试
+#include<stdio.h>
+#include <corecrt_malloc.h>
+typedef int ElemType;
+typedef struct Linknode {
+	ElemType data;
+	struct Linknode* next;
+}*LiStack;
+//初始化链式栈
+void LiStack_init(LiStack& StackL) {
+	StackL->next = NULL;
+}
+//判空
+bool LiStack_Empty(LiStack StackL) {
+	if (StackL->next == NULL)
+		return true;
+	else
+		return false;
+
+}
+//进栈
+bool push(LiStack& StackL, ElemType item) {
+	Linknode* p;
+	p = (Linknode*)malloc(sizeof(Linknode));
+	if (!p) {
+		printf("创建新节点失败\n");
+		return false;
+	}
+	p->data = item;
+	p->next = StackL->next;
+	StackL->next = p;
+	return true;
+}
+//出栈
+bool pop(LiStack& StackL, ElemType& item) {
+	if (StackL->next == NULL)
+		return false;//栈为空，无法出栈
+	Linknode* p;
+	p = StackL->next;
+	item = p->data;
+	StackL->next = p->next;
+	free(p);
+	return true;
+}
