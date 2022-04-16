@@ -1,0 +1,80 @@
+#include<stdio.h>
+typedef int ElemType;
+#define MAXSIZE 50
+typedef struct {
+	ElemType data[MAXSIZE];
+	int rear;
+	int front;
+}SqQueue;
+//初始化
+void SqQueue_init(SqQueue& Q) {
+	Q.front = Q.rear = 0;
+}
+//判空
+bool SqQueue_Empty(SqQueue Q) {
+	if (Q.front == Q.rear)
+		return true;
+	else
+		return false;
+}
+//入队
+bool EnQueue(SqQueue& Q, ElemType item) {
+	if ((Q.rear + 1) % MAXSIZE == Q.front)
+		return false;//队满无法进行插入
+	Q.data[Q.rear] = item;
+	Q.rear = (Q.rear + 1) % MAXSIZE;
+	return true;
+}
+//出队
+bool DeQueue(SqQueue& Q,ElemType &item) {
+	if (Q.front == Q.rear)
+		return false;
+	item = Q.data[Q.front];
+	Q.front = (Q.front + 1) % MAXSIZE;
+	return true;
+}
+void SqQueue_Print(SqQueue Q) {
+	if (SqQueue_Empty(Q))
+		printf("the queue is empty\n");
+	else {
+		int tmp = Q.front;
+		while (tmp < Q.rear) {
+			printf("%d", Q.data[tmp++]);
+			if(tmp!=Q.rear)
+				printf("<-");
+		}
+		printf("\n");
+	}
+}
+void test() {
+	SqQueue Q;
+	SqQueue_init(Q);
+	printf("请输入要入队的元素个数\n");
+	int n,item;
+	scanf_s("%d", &n);
+	while (n--) {
+		printf("请输入此次入队的元素数据\n");
+		scanf_s("%d", &item);
+		EnQueue(Q, item);
+	}
+	printf("完成入队之后：\n");
+	SqQueue_Print(Q);
+	printf("请输入你想出队的元素个数\n");
+	scanf_s("%d", &n);
+	if (n > (Q.rear + MAXSIZE - Q.front) % MAXSIZE)
+		printf("出队个数大于队列所含元素个数\n");
+	else {
+		while (n--) {
+			DeQueue(Q, item);
+			printf("此时出队元素为%d\n", item);
+		}
+	}
+	printf("完成出队之后：\n");
+	SqQueue_Print(Q);
+	
+
+}
+int main() {
+	test();
+	return 0;
+}
